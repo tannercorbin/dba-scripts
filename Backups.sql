@@ -21,6 +21,7 @@ AND bup.database_name IN (SELECT name FROM master.dbo.sysdatabases)
 ORDER BY bup.database_name
 
 
+
 SELECT  CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS Server
        ,msdb.dbo.backupset.database_name
        ,msdb.dbo.backupset.backup_start_date
