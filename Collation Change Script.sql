@@ -51,12 +51,12 @@ BEGIN
 
         IF (@data_type LIKE '%char%')
         BEGIN TRY
-            SET @sql = 'ALTER TABLE Reporting.' + @table + ' ALTER COLUMN ' + @column_name + ' ' + @data_type + '(' + CAST(@max_length AS nvarchar(100)) + ') COLLATE ' + @collate
+            SET @sql = 'ALTER TABLE ' + @table + ' ALTER COLUMN ' + @column_name + ' ' + @data_type + '(' + CAST(@max_length AS nvarchar(100)) + ') COLLATE ' + @collate
             PRINT @sql
-            --EXEC sp_executesql @sql
+            EXEC sp_executesql @sql
         END TRY
         BEGIN CATCH
-          PRINT 'ERROR: Some index or constraint rely on the column' + @column_name + '. No conversion possible.'
+          PRINT 'ERROR: Some index or constraint rely on the column ' + @column_name + '. No conversion possible.'
           PRINT @sql
         END CATCH
 
