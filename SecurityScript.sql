@@ -1,33 +1,5 @@
-/*
-This script will script the role members for all roles on the database.
-
-This is useful for scripting permissions in a development environment before refreshing
-development with a copy of production.  This will allow us to easily ensure
-development permissions are not lost during a prod to dev restoration. 
-Author: S. Kusen
-
-Updates:
-
-2015-06-30: 
-1. Re-numbered all sections based on additional updates being added inline.
-2. Added sections 8, 8.1; From Eddict, user defined types needed to be added.
-3. Added sections 4, 4.1; From nhaberl, for orphaned users mapping (if logins don't exist, they will not be created by this script).
-4. Updated section 3.1; From nhaberl, updated to include a default schema of dbo. 
-
-2014-07-25: Fix pointed out by virgo for where logins are mapped to users that are a different name.  Changed ***+ ' FOR LOGIN ' + QUOTENAME([name]) +*** to ***+ ' FOR LOGIN ' + QUOTENAME(suser_sname([sid])) +***.
-
-2014-01-24: Updated to account for 2012 contained db users
-
-2012-05-14: Incorporated a fix pointed out by aruopna for Schema-level permissions.
-
-2010-01-20: Turned statements into a cursor and then using print statements to make it easier to 
-copy/paste into a query window.
-Added support for schema level permissions
 
 
-Thanks to wsoranno@winona.edu and choffman for the recommendations.
-
-*/
 
 DECLARE 
     @sql VARCHAR(2048)
@@ -80,7 +52,8 @@ SELECT 'ALTER USER [' + rm.name + '] WITH LOGIN = [' + rm.name + ']',
 4.1 AS [-- RESULT ORDER HOLDER --]
 FROM sys.database_principals AS rm
  Inner JOIN sys.server_principals as sp
- ON rm.name = sp.name and rm.sid <> sp.sid
+ ON rm.name = sp.name COLLATE SQL_Latin1_General_CP1_CI_AS
+ AND rm.sid <> sp.sid 
 WHERE rm.[type] IN ('U', 'S', 'G') -- windows users, sql users, windows groups
  AND rm.name NOT IN ('dbo', 'guest', 'INFORMATION_SCHEMA', 'sys', 'MS_DataCollectorInternalUser')
 
@@ -260,3 +233,6 @@ END
 
 CLOSE tmp
 DEALLOCATE tmp 
+
+
+
