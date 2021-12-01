@@ -20,3 +20,12 @@ LEFT JOIN msdb.dbo.[syscategories] C
         --AND sj.[enabled] = 1 
 ORDER BY sj.[name] 
 
+
+--List out jobs without email notifications configured.
+SELECT 'SQL Agent job(s) without notification operator found:' AS [Message]
+
+SELECT j.[name] AS [JobName]
+FROM [dbo].[sysjobs] j
+LEFT JOIN [dbo].[sysoperators] o ON (j.[notify_email_operator_id] = o.[id])
+WHERE j.[enabled] = 1
+	AND j.[notify_level_email] NOT IN (1, 2, 3)
